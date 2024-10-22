@@ -1,1 +1,14 @@
-#wip
+<#
+    takes in two array inputs
+    and outputs the sum total of those two array lengths
+#>
+GetSumLengthOf(Arr1 : []X, Arr2 : []X where X:type)<decides><transacts>:int=
+    NewArray := Arr1.AddArray[Arr2]
+    NewArray.Length
+<#
+    takes in two arrays
+    and outputs a new array where the content of the first array will be output first and the added array will follow the first 
+    ie; Array{1,2} Array{3,4} would make Array{1,2,3,4}
+#>
+(Arr1 : []X).AddArray(Arr2 : []X where X:type)<decides><transacts>:[]X=
+    Output := Arr1.Insert[Arr1.Length, Arr2]

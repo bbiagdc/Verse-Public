@@ -1,14 +1,30 @@
-<#
+
+<# 
     takes in two array inputs
-    and outputs the sum total of those two array lengths
+    and outputs the sum total of those two array lengths 
 #>
+ToDo: Test Arr1.AddArray[Arr2].Length as the return value, to cut out a line
 GetSumLengthOf(Arr1 : []X, Arr2 : []X where X:type)<decides><transacts>:int=
     NewArray := Arr1.AddArray[Arr2]
     NewArray.Length
-<#
+
+<# 
     takes in two arrays
     and outputs a new array where the content of the first array will be output first and the added array will follow the first 
-    ie; Array{1,2} Array{3,4} would make Array{1,2,3,4}
+    ie; Array{1,2} Array{3,4} would make Array{1,2,3,4} 
 #>
-(Arr1 : []X).AddArray(Arr2 : []X where X:type)<decides><transacts>:[]X=
-    Output := Arr1.Insert[Arr1.Length, Arr2]
+ToDo: Test Removing 'Output := ' for optimization
+(Arr1 : []X).AddArray(Arr2 : []X where X:type)<decides><transacts>:[]X= Output := Arr1.Insert[Arr1.Length, Arr2]
+
+<# 
+    takes in an array and a single element of a comparable type
+    then returns the input array if the single element is already in the array, otherwise returns a new array with the single element added to the input array 
+#>
+(Arr:[]x).AddUniqueElement(In:x where x:subtype(comparable)):[]x= if. Arr.Find[In] then Arr else Arr + array. In
+
+<# 
+    takes in an int array
+    then goes through every index and prints out the index and it's stored value 
+#>
+ToDo: make one of these for float, and chars?
+(Arr:[]int).PrintIntArray():void= for. Index->Element:Arr do Print("Index: {Index} Element: {Element}")

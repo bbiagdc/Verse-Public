@@ -13,7 +13,9 @@ GetSumLengthOf(Arr1 : []X, Arr2 : []X where X:type)<decides><transacts>:int=
     and outputs a new array where the content of the first array will be output first and the added array will follow the first 
     ie; Array{1,2} Array{3,4} would make Array{1,2,3,4} 
 #>
-ToDo: Test Removing 'Output := ' for optimization
+ToDo: 
+    Test Removing 'Output := ' for optimization
+    Also Test just doing Arr1 + Arr2 as the output which would remedy this function near useless IMO, so I might cut it if this works
 (Arr1 : []X).AddArray(Arr2 : []X where X:type)<decides><transacts>:[]X= Output := Arr1.Insert[Arr1.Length, Arr2]
 
 <# 

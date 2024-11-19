@@ -1,1 +1,145 @@
-#wip
+using { /Fortnite.com/Devices }
+using { /Fortnite.com/Characters }
+using { /Verse.org/Simulation }
+<#
+    this interface will be used to indicate classes than need to be updated every frame by the game manager
+    this interface consists of one function
+    being the update function, which is to be called whenever the game manager's update loop happens
+#>
+updatable := interface:
+    <#
+        takes in nothing, and returns nothing
+        this function is used to update anything that needs to happen per frame within the class
+    #>
+    Update():void
+<#
+    this interface will be used to indicate classes that need to initialize on game start, and/or classes that need to close on game end
+    this interface consists of two funcitons
+    Init which is called OnBegin from the game manager
+    and End which is called OnEnd from the game manager
+#>
+initiatable := interface:
+    <#
+        takes in nothing, and returns nothing
+        this function is used to initialize anything this class needs before gameplay
+    #>
+    Init():void
+    <#
+        takes in nothing, and returns nothing
+        this function is used to close anything that needs to end now that gameplay is ended
+    #>
+    End():void
+<#
+    this is the game manager class that will be used for all of my game management moving forward
+#>
+game_manager_default := class(creative_device,initiatable, updatable):
+    <#
+        this is an editable optional team_settings_and_inventory_device
+        used to track all players, by collecting them on spawn
+        *IMPORTANT* this is optional as if it is connected, no player spawners need to be
+        BUT this should only be used if already present on the map for memory reasons
+        although the attached team settings device should be set to no team to work properly
+    #>
+    @editable
+    Team_Settings_Device:?team_settings_and_inventory_device=false
+    <#
+        this is an editable array of player spawners
+        used to track all players, by collecting them on spawn
+        *IMPORTANT* this is not used if the 'Team_Settings_Device' is set
+    #>
+    @editable
+    Spawners:[]player_spawner_device=array:
+    <#
+        Array of every player in the game
+    #>
+    var Players:[]agent=array:
+    <#
+        Array of all stored updatable classes
+        used to call the Update function from this class' update function
+    #>
+    var Updatables:[]updatable=array:
+    <#
+        Array of all stored initiatable classes
+        used to call all of the init and end function from this class' init and end functions
+    #>
+    var Initiables:[]initiatable=array:
+    <#
+        Array of all stored cancelable subscriptions
+        used to close all subscriptions on game end
+    #>
+    var Cancelables:[]cancelable=array:
+    <#
+        Cleanup event
+        called on end of this device
+        used to close out any loops that are present on game end
+    #>
+    Cleanup:event()=event(){}
+    <#
+        this is where new initiables should be added by using 'RegisterAndInit' which will init any added initiables
+        calls 'HandleDevices'
+    #>
+    Init<override>():void= 
+        HandleStandardInits()
+    <#
+        if the team settings device is set, subscribes it's spawned event to handle spawn
+        otherwise subscribes the spawned event of all spawners in the 'Spawners' array
+        then subscribes the 'playspaces' 
+    #>
+    HandleStandardInits():void=
+        if(TSM:=team_settings_and_inventory_device[Team_Settings_Device?]). TSM.TeamMemberSpawnedEvent.Subscribe(HandleSpawn).Handle()
+        else. for(Spawner:Spawners). Spawner.SpawnedEvent.Subscribe(HandleSpawn).Handle()
+        GetPlayspace().PlayerRemovedEvent().Subscribe(RemovePlayer).Handle()
+    <#
+        takes in a agent
+        adds that agent to the Players list if that agent is not on the list
+    #>
+    HandleSpawn(Agent:agent):void= if(Ind:=Players.Find[Agent]){} else. set Players+=array. Agent
+    <#
+        takes in a player
+        then finds it's agent, then finds that agent in the Playes array and removes it
+    #>
+    RemovePlayer(Player:player):void= if(A:=agent[Player], Index:=Players.Find[A], Temp:=Players.RemoveElement[Index]){set Players = Temp}
+    <#
+        updates every updatable
+    #>        
+    Update<override>():void= for(upd:Updatables). upd.Update()
+    <#
+        calls cleanup
+        ends all initiables
+        cancels all cancelables
+    #>
+    End<override>():void= 
+        Cleanup.Signal()
+        for(ini:Initiables). ini.End()
+        for(can:Cancelables). can.Cancel()
+    <#
+        takes in an initiatable class 
+        and adds it to Initiables, so it can be ended later while calling it's init function
+    #>
+    (ini:initiatable).RegisterAndInit():void= 
+        set Initiables += array. ini
+        ini.Init()
+    <#
+        takes in an updatable class, and adds it to Updatables to be updated every frame
+    #>
+    (upd:updatable).AddToUpdates():void= set Updatables += array. upd
+    <#
+        takes in an cancelable class, and adds it to Cancelables so it can be closed out on end
+    #>
+    (can:cancelable).Handle():void= set Cancelables += array. can
+    <#
+        goes through the player list
+        and returns all active players
+    #>
+    ActivePlayers()<transacts>:[]agent=
+        var Output:[]agent=array{}
+        for(Player:Players, FC:=Player.GetFortCharacter[], FC.IsActive[]). set Output += array. Player
+        Output
+    <#
+        takes in a agent
+        and returns every agent that is not htme, and is active from the player list
+    #>
+    (Agent:agent).ActiveTargets():[]agent=
+        var Output:[]agent=array:
+        for(Player:ActivePlayers()). set Output += array. Player
+        Output

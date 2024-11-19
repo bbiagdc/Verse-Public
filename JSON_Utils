@@ -1,0 +1,159 @@
+
+Work in progress
+
+using { /Fortnite.com/Devices }
+using { /Verse.org/Simulation }
+using { /UnrealEngine.com/JSON }
+
+<#
+
+done:
+    (string).Quote adds "" to front and back
+    (String).Brace adds {} to front and back
+    parse string
+    parse int
+    int .ToJson
+    string .ToJson
+    float .ToJson
+    parse float
+    int .ToJsonFile
+    string .ToJsonFile
+    float .ToJsonFile
+
+ToDO:
+    
+    map [int]string.ToJson
+    map [float]string.ToJson
+    map [string]string.ToJson
+
+    MakeLayer
+
+    map [int]string.ToJsonLayer
+    map [float]string.ToJsonLayer
+    map [string]string.ToJsonLayer
+
+    CombineToJson()
+    array1 []int array2 []string
+    array1 []float array2 []string
+    array1 []string array2 []string
+
+    CombineToJsonLayer()
+    array1 []int array2 []string
+    array1 []float array2 []string
+    array1 []string array2 []string
+
+    parse array
+
+    remove value
+    which takes in a JSON and a name
+    and outputs a JSON with the value tied to that name removed from the file
+
+    Add Value
+    takes in a JSON file, a string, and an int, float, or string
+    and outputs the JSON file with the input value added
+#>
+
+json_library_v1 := class(creative_device):
+    ######################################################################################################
+    # Requirements #######################################################################################
+    ######################################################################################################
+    <#
+        is an editable string
+        *Important* this should be set to a single quotation mark
+    #>
+    TT_qm<localizes>:message:=""
+    @editable{ToolTip:=TT_qm} qm:string=""
+    <#
+        is an editable string
+        *Important* this should be set to the left curly bracket
+    #>
+    TT_lcb<localizes>:message:=""
+    @editable{ToolTip:=TT_lcb}  lcb:string=""
+    <#
+        is an editable string
+        *Important* this should be set to the right curly bracket
+    #>
+    TT_rcb<localizes>:message:=""
+    @editable{ToolTip:=TT_rcb} rcb:string=""
+
+
+    OnBegin<override>()<suspends>:void=
+        JSON := array{1.0.ToJson("float"),1.ToJson("int"),"one".ToJson("string")}.MakeJsonFile()
+        if(Float:=JSON.ParseFloat["float"], Integer:=JSON.ParseInt["int"], String:=JSON.ParseString["string"]):
+            Print("{Float}{Integer}{String}")
+        else. Print("Failed to parse")
+        Print("{JSON}")
+    ######################################################################################################
+    # Parse individual values from a JSON file ###########################################################
+    ######################################################################################################
+    <#
+        takes in a JSON formatted string and another string
+        then parses the object corresponding with the second array as a string
+    #>
+    (Json:string).ParseString(Name:string)<decides><transacts>:string= Parse[Json].AsObject[][Name].AsString[]
+    <#
+        takes in a JSON formatted string and another string
+        then parses the object corresponding with the second array as an int
+    #>
+    (Json:string).ParseInt(Name:string)<decides><transacts>:int= Parse[Json].AsObject[][Name].AsInt[]
+        <#
+        takes in a JSON formatted string and another string
+        then parses the object corresponding with the second array as an int
+    #>
+    (Json:string).ParseFloat(Name:string)<decides><transacts>:float= Parse[Json].AsObject[][Name].AsFloat[]
+    ######################################################################################################
+    # JSON file creation #################################################################################
+    ######################################################################################################
+    <#
+        takes in an int and a string
+        and returns a json formatted string with the int as the value and the string as the name
+    #>
+    (I:int).ToJson(Name:string)<transacts>:string= "{Name.Quote()}:{I}"
+    <#
+        takes in an int and a string
+        and returns a json file formatted string with the int as the value and the string as the name
+    #>
+    (I:int).ToJsonFile(Name:string)<transacts>:string= "{Name.Quote()}:{I}".Brace()
+    <#
+        takes in an int and a string
+        and returns a json formatted string with the int as the value and the string as the name
+    #>
+    (S:string).ToJson(Name:string)<transacts>:string= "{Name.Quote()}:{S.Quote()}"
+    <#
+        takes in an int and a string
+        and returns a json file formatted string with the int as the value and the string as the name
+    #>
+    (S:string).ToJsonFile(Name:string)<transacts>:string= "{Name.Quote()}:{S.Quote()}".Brace()
+    <#
+        takes in an int and a string
+        and returns a json formatted string with the int as the value and the string as the name
+    #>
+    (F:float).ToJson(Name:string)<transacts>:string= "{Name.Quote()}:{F}"
+    <#
+        takes in an int and a string
+        and returns a json formatted string with the int as the value and the string as the name
+    #>
+    (F:float).ToJsonFile(Name:string)<transacts>:string= "{Name.Quote()}:{F}".Brace()
+    <#
+        takes in an array of strings
+        returns a parsed json file of that array
+
+        need to remove the quote from the lat index #######################################################################################################################
+    #>
+    (Strings:[]string).MakeJsonFile():string=
+        var Output:string=""
+        for(S:Strings). set Output += "{S},"
+        Output.Brace()
+    ######################################################################################################
+    # Utilities ##########################################################################################
+    ######################################################################################################
+    <#
+        takes in a string
+        and returns that string wrapped in quotes
+    #>
+    (S:string).Quote()<transacts>:string="{qm}{S}{qm}"
+    <#
+        takes in a string
+        and returns that string wrapped in curly brackets
+    #>
+    (S:string).Brace()<transacts>:string="{lcb}{S}{rcb}"

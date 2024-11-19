@@ -11,7 +11,7 @@ updatable := interface:
         takes in nothing, and returns nothing
         this function is used to update anything that needs to happen per frame within the class
     #>
-    Update():void
+    Update()<suspends>:void
 <#
     this interface will be used to indicate classes that need to initialize on game start, and/or classes that need to close on game end
     this interface consists of two funcitons
@@ -80,6 +80,7 @@ game_manager_default := class(creative_device,initiatable, updatable):
     #>
     Init<override>():void= 
         HandleStandardInits()
+        spawn. Update()
     <#
         if the team settings device is set, subscribes it's spawned event to handle spawn
         otherwise subscribes the spawned event of all spawners in the 'Spawners' array
@@ -100,9 +101,17 @@ game_manager_default := class(creative_device,initiatable, updatable):
     #>
     RemovePlayer(Player:player):void= if(A:=agent[Player], Index:=Players.Find[A], Temp:=Players.RemoveElement[Index]){set Players = Temp}
     <#
-        updates every updatable
+        if there is an updatable in the Updatables array
+        spawns a loop that updates every updatable every frame
+        and closes on game end, otherwise does nothing
     #>        
-    Update<override>():void= for(upd:Updatables). upd.Update()
+    Update<override>()<suspends>:void=
+        if(Updatables.Length > 0):
+            race:
+                loop:
+                    Sleep(0.0)
+                    for(upd:Updatables). upd.Update()
+                Cleanup.Await()
     <#
         calls cleanup
         ends all initiables

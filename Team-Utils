@@ -1,3 +1,5 @@
+    using { /Fortnite.com/Teams }
+
     <#
         Takes in a creative object
         and outputs the fort team collection of the playspace gotten from the creative object

@@ -1,17 +1,16 @@
 
 <# 
-    takes in an array and a single element of a comparable type
-    then returns the input array if the single element is already in the array, otherwise returns a new array with the single element added to the input array 
-#>
-(Arr:[]x).AddUniqueElement(In:x where x:subtype(comparable)):[]x= if. Arr.Find[In] then Arr else Arr + array. In
-<# 
-    takes in an int array
-    then goes through every index and prints out the index and it's stored value 
-#>
-ToDo: make one of these for float, and chars?
-(Arr:[]int).PrintIntArray():void= for. Index->Element:Arr do Print("Index: {Index} Element: {Element}")
+    takes in an array of comparable elements and an individual element input
+    if the element is not represented in the array, add it to the array and return that
+    otherwise just return the input array, so this could be used as 'set InputArray=InputArray.AddUniqueElement(InputElement)
+ #>
+(Arr:[]x).AddUniqueElement(In:x where x:subtype(comparable)):[]x= 
+    if(Arr.Find[In]){Arr}else{Arr+array{In}}
 <#
-    takes in an array
-    Removes every element past the player display limit - 1
-#>
-(Arr:[]x).Trim(IndexToEndAt:int where x : type):[]x= if. Out := Arr.Remove[IndexToEndAt, Arr.Length-1] then return Out else return Arr
+    takes in an array of comparable elements
+    and returns an array of all unique elements represented by the input
+ #>
+(InArray:[]t where t:subtype(comparable)).ExtractUniqueElements():[]t=
+    var Temp:[]t=array:
+    for(E:InArray,not Temp.Find[E]){set Temp+=array{E}}
+    Temp

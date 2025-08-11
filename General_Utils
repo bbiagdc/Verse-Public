@@ -15,3 +15,8 @@ map_utils:=module:
       var Out:[x]t=map{}
       for(K->V:Input1,K<>Input2). (set Out[K]=V)or void
       Out
+
+number_utils:=module:
+
+  ToInt(InFloat:float):int=
+      Round[InFloat] or 0

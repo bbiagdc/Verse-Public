@@ -1,0 +1,31 @@
+
+using { /Fortnite.com/Devices }
+using { /Verse.org/Simulation }
+
+player_join_manager_device:=class(creative_device):
+
+    @editable
+    On_Player_Join_Out:trigger_device=trigger_device{}
+    @editable
+    On_Player_Leave_Out:trigger_device=trigger_device{}
+
+    GameEndEvent:event()=event(){}
+    OnEnd<override>():void= GameEndEvent.Signal()
+
+    OnBegin<override>()<suspends>:void=
+        Playspace:=GetPlayspace()
+        for(Player:Playspace.GetPlayers()){ Handle_Join(Player) }
+        race:
+            GameEndEvent.Await()
+            loop{ NewParticipant:=Playspace.ParticipantAddedEvent().Await()
+                  Handle_Join(NewParticipant) }
+            loop{ OldParticipant:=Playspace.ParticipantRemovedEvent().Await()
+                  Handle_Leave(OldParticipant) }
+
+    Handle_Join(NewParticipant:agent):void=
+        if(NewPlayer:=player[NewParticipant]):
+            On_Player_Join_Out.Trigger(NewPlayer)
+
+    Handle_Leave(OldParticipant:agent):void=
+        if(OldPlayer:=player[OldParticipant]):
+            On_Player_Leave_Out.Trigger(OldPlayer) 

@@ -1,4 +1,0 @@
-(Input1:[x]t).RemoveWithKey(Input2:x where t:type,x:subtype(comparable)):[x]t= 
-    var Out:[x]t=map{}
-    for(K->V:Input1,K<>Input2). (set Out[K]=V)or void
-    Out

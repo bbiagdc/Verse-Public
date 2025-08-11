@@ -1,16 +1,8 @@
 
-<# 
-    takes in an array of comparable elements and an individual element input
-    if the element is not represented in the array, add it to the array and return that
-    otherwise just return the input array, so this could be used as 'set InputArray=InputArray.AddUniqueElement(InputElement)
- #>
 (Arr:[]x).AddUniqueElement(In:x where x:subtype(comparable)):[]x= 
     if(Arr.Find[In]){Arr}else{Arr+array{In}}
-<#
-    takes in an array of comparable elements
-    and returns an array of all unique elements represented by the input
- #>
-(InArray:[]t where t:subtype(comparable)).ExtractUniqueElements():[]t=
+
+(InArray:[]t where t:subtype(comparable)).RemoveUniqueElements():[]t=
     var Temp:[]t=array:
     for(E:InArray,not Temp.Find[E]){set Temp+=array{E}}
     Temp

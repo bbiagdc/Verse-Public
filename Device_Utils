@@ -1,0 +1,5 @@
+using { /Verse.org/Simulation }
+using { /Fortnite.com/Devices }
+
+(Trigger:trigger_device).Await()<suspends>:?agent=
+    Trigger.TriggeredEvent.Await()

@@ -1,22 +1,22 @@
 queue<public>(t:type):=class:
 
-        Stack<private>:[]t=array{}
+   Stack<private>:[]t=array{}
 
-        Add<public>(InType:t):queue(t)=
-            queue(t){Stack:=Stack+array{InType}}
+    Add<public>(InType:t):queue(t)=
+        queue(t){Stack:=Stack+array{InType}}
 
-        Pop<public>()<transacts>:?tuple(t,queue(t))=
-            option{(Stack[0],queue(t){Stack:=for(Index:=1..Stack.Length-1,Value:=Stack[Index]){Value}})}
+    Pop<public>()<transacts>:?tuple(t,queue(t))=
+        option{(Stack[0],queue(t){Stack:=for(Index:=1..Stack.Length-1,Value:=Stack[Index]){Value}})}
 
 comp_queue<public>(t:subtype(comparable)):=class:
 
-        Stack<private>:[]t=array{}
+    Stack<private>:[]t=array{}
 
-        Add<public>(InType:t):comp_queue(t)=
-            comp_queue(t){Stack:=Stack+array{InType}}
+    Add<public>(InType:t):comp_queue(t)=
+        comp_queue(t){Stack:=Stack+array{InType}}
 
-        Pop<public>()<transacts>:?tuple(t,comp_queue(t))=
-            option{(Stack[0],comp_queue(t){Stack:=for(Index:=1..Stack.Length-1,Value:=Stack[Index]){Value}})}
+    Pop<public>()<transacts>:?tuple(t,comp_queue(t))=
+        option{(Stack[0],comp_queue(t){Stack:=for(Index:=1..Stack.Length-1,Value:=Stack[Index]){Value}})}
 
-        Remove(InType:t):comp_queue(t)=
-            comp_queue(t){Stack:=for(Value:Stack,Value<>InType){Value}}
+    Remove<public>(InType:t)<transacts>:comp_queue(t)=
+        comp_queue(t){Stack:=for(Value:Stack,Value<>InType){Value}}

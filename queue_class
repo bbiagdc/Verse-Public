@@ -1,0 +1,9 @@
+queue<public>(t:type):=class:
+
+        Stack<private>:[]t=array{}
+
+        Add<public>(InType:t):queue(t)=
+            queue(t){Stack:=Stack+array{InType}}
+
+        Pop<public>()<transacts>:?tuple(t,queue(t))=
+            option{(Stack[0],queue(t){Stack:=for(Index:=1..Stack.Length-1,Value:=Stack[Index]){Value}})}

@@ -1,8 +1,0 @@
-
-(Arr:[]x).AddUniqueElement(In:x where x:subtype(comparable)):[]x= 
-    if(Arr.Find[In]){Arr}else{Arr+array{In}}
-
-(InArray:[]t where t:subtype(comparable)).RemoveUniqueElements():[]t=
-    var Temp:[]t=array:
-    for(E:InArray,not Temp.Find[E]){set Temp+=array{E}}
-    Temp

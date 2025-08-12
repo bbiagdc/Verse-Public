@@ -20,3 +20,19 @@ number_utils:=module:
 
   ToInt(InFloat:float):int=
       Round[InFloat] or 0
+
+localization_utils:=module:
+
+  ToMessage<localizes>(InString:string):message="{InString}"
+
+  CreateMessageWith(InStrings:[]string):message=
+      var OutString:string=""
+      for(String:InStrings){set OutString+=String}
+      ToMessage("{OutString}")
+
+print_extension:=module:
+
+  Print(InStrings:[]string):void=
+      var OutString:string=""
+      for(String:InStrings){set OutString+=String}
+      Print("{OutString}")

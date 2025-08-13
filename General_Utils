@@ -32,7 +32,7 @@ localization_utils:=module:
 
 print_extension:=module:
 
-  Print(InStrings:[]string):void=
+  PrintStrings(InStrings:[]string):void=
       var OutString:string=""
       for(String:InStrings){set OutString+=String}
       Print("{OutString}")

@@ -1,0 +1,20 @@
+using { /Fortnite.com/Devices/CreativeAnimation }
+using { /UnrealEngine.com/Temporary/SpatialMath }
+
+animation_controller_utils:=module:
+
+  MakeKeyframe(Duration:float,?DeltaLocation:vector3=vector3{},?DeltaRotation:?rotation=false):keyframe_delta=keyframe_delta:
+      DeltaLocation:=DeltaLocation
+      DeltaRotation:=DeltaRotation? or rotation{}
+      Time:=Duration
+
+  PrintFrames(Keyframes:[]keyframe_delta):void=
+      var OutString:string=""
+      for(Frame:Keyframes){set OutString+="{Frame}"}
+      Print("{OutString}")
+
+  ToString(Keyframe:keyframe_delta):string=
+      "\{DeltaLocation:={Keyframe.DeltaLocation},\nDeltaRotation:={Keyframe.DeltaRotation},\nDeltaScale:={Keyframe.DeltaScale},\nTime:={Keyframe.Time},\nInterpolation:={Keyframe.Interpolation}\}"
+
+  ToString(Interpolation:cubic_bezier_parameters):string=
+      "\{X0:={Interpolation.X0},\nX1:={Interpolation.X1},\nY0:={Interpolation.Y0},\nY1:={Interpolation.Y1}\}"
